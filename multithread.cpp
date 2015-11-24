@@ -12,9 +12,9 @@ using namespace std;
 // 0: temporary value between fetch_sub and fetch_add in reader lock
 // -1: there is a writer active. The readers are blocked.
 const int N = 10; // nine concurrent readers are allowed
-//atomic<int> cnt(N);
-//atomic_init(cnt, N);
-atomic<int> cnt = ATOMIC_VAR_INIT(N);
+atomic<int> cnt(0);
+// this way will do
+//atomic<int> cnt = ATOMIC_VAR_INIT(N);
  
 vector<int> data;
  
@@ -57,6 +57,9 @@ void writer()
  
 int main()
 {
+// both of the two functions can be used to modify the val. of cnt	
+//	atomic_init(&cnt, N);
+//	atomic_store(&cnt, N);
     vector<thread> v;
     for (int n = 0; n < N; ++n) {
         v.emplace_back(reader, n);
